@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alessandra — Arquitetura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9943A;
+    --gold-light: #DEB96A;
+    --gold-pale: #F5E8CC;
+    --moss: #4A5C3A;
+    --moss-dark: #2E3B24;
+    --moss-light: #7A8C68;
+    --cream: #F7F3EE;
+    --ink: #1A1A16;
+    --ink-soft: #3A3A32;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    mix-blend-mode: multiply;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--moss-dark);
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+  .nav-links {
+    display: flex; gap: 3rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 300;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .hero-left {
+    background: var(--moss-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem 5rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left::before {
+    content: '';
+    position: absolute;
+    top: -20%; right: -30%;
+    width: 80%; padding-bottom: 80%;
+    border-radius: 50%;
+    border: 1px solid rgba(201,148,58,0.2);
+    animation: pulse-ring 4s ease-in-out infinite;
+  }
+  .hero-left::after {
+    content: '';
+    position: absolute;
+    top: -5%; right: -15%;
+    width: 50%; padding-bottom: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(201,148,58,0.15);
+    animation: pulse-ring 4s ease-in-out infinite 1s;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.6; }
+  }
+  .hero-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    color: var(--cream);
+    font-weight: 300;
+    line-height: 1.05;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+  }
+  .hero-name em { font-style: italic; color: var(--gold-light); }
+  .hero-divider {
+    width: 60px; height: 1px;
+    background: var(--gold);
+    margin: 2.5rem 0;
+    opacity: 0;
+    animation: expandLine 0.8s ease forwards 0.7s;
+  }
+  @keyframes expandLine {
+    from { width: 0; opacity: 0; }
+    to { width: 60px; opacity: 1; }
+  }
+  .hero-desc {
+    font-size: 0.85rem;
+    color: rgba(247,243,238,0.55);
+    font-weight: 300;
+    line-height: 2;
+    max-width: 320px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+    background: #2A3020;
+  }
+  .hero-img-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #2E3B24 0%, #1A2218 40%, #3A4A2E 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .hero-img-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 2rem;
+    border: 1px solid rgba(201,148,58,0.2);
+  }
+  .hero-img-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(201,148,58,0.4);
+    writing-mode: vertical-rl;
+  }
+  .hero-year {
+    position: absolute;
+    bottom: 3rem; right: 3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 300;
+    color: rgba(201,148,58,0.08);
+    line-height: 1;
+    user-select: none;
+  }
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 3rem; left: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.2s;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: var(--gold);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { width: 40px; }
+    50% { width: 60px; }
+  }
+  .scroll-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.4);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ABOUT */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 8rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 7rem;
+    font-weight: 300;
+    color: rgba(201,148,58,0.12);
+    line-height: 1;
+    align-self: start;
+    padding-top: 0.5rem;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--moss-dark);
+    margin-bottom: 2rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .about-text {
+    font-size: 0.9rem;
+    line-height: 2;
+    color: var(--ink-soft);
+    font-weight: 300;
+    max-width: 540px;
+    margin-bottom: 3rem;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    border-top: 1px solid rgba(74,92,58,0.15);
+    padding-top: 2.5rem;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--moss-light);
+  }
+
+  /* SERVICES */
+  .services-section {
+    background: var(--moss-dark);
+    padding: 8rem 4rem;
+  }
+  .services-inner { max-width: 1200px; margin: 0 auto; }
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 5rem;
+  }
+  .services-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .services-title em { font-style: italic; color: var(--gold-light); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .service-card {
+    background: rgba(247,243,238,0.03);
+    border: 1px solid rgba(201,148,58,0.1);
+    padding: 3rem 2.5rem;
+    transition: all 0.4s ease;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .service-card:hover { background: rgba(201,148,58,0.06); border-color: rgba(201,148,58,0.3); }
+  .service-card:hover::after { transform: scaleX(1); }
+  .service-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    font-weight: 300;
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+  .service-desc {
+    font-size: 0.8rem;
+    color: rgba(247,243,238,0.45);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* PORTFOLIO */
+  .portfolio-section {
+    padding: 8rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .portfolio-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+  }
+  .portfolio-filter {
+    display: flex; gap: 2rem;
+    list-style: none;
+  }
+  .portfolio-filter li {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--moss-light);
+    cursor: none;
+    transition: color 0.3s;
+    padding-bottom: 4px;
+    border-bottom: 1px solid transparent;
+  }
+  .portfolio-filter li.active,
+  .portfolio-filter li:hover { color: var(--gold); border-color: var(--gold); }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+  }
+  .proj { overflow: hidden; position: relative; cursor: none; }
+  .proj-1 { grid-column: span 7; grid-row: span 2; }
+  .proj-2 { grid-column: span 5; }
+  .proj-3 { grid-column: span 5; }
+  .proj-4 { grid-column: span 4; }
+  .proj-5 { grid-column: span 4; }
+  .proj-6 { grid-column: span 4; }
+  .proj-inner {
+    width: 100%; height: 100%;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-1 .proj-inner { min-height: 560px; }
+  .proj-bg {
+    width: 100%; height: 100%;
+    transition: transform 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .proj:hover .proj-bg { transform: scale(1.04); }
+  .proj-1 .proj-bg { background: linear-gradient(135deg, #2E3B24, #1A2218); }
+  .proj-2 .proj-bg { background: linear-gradient(135deg, #3A3020, #28231A); }
+  .proj-3 .proj-bg { background: linear-gradient(135deg, #1E2A1A, #2A3828); }
+  .proj-4 .proj-bg { background: linear-gradient(135deg, #28231A, #3A3020); }
+  .proj-5 .proj-bg { background: linear-gradient(135deg, #2A3828, #1E2A1A); }
+  .proj-6 .proj-bg { background: linear-gradient(135deg, #302418, #1A1812); }
+  .proj-placeholder-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    color: rgba(201,148,58,0.2);
+    text-transform: uppercase;
+  }
+  .proj-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,26,22,0.9) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+  }
+  .proj:hover .proj-overlay { opacity: 1; }
+  .proj-category {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .proj-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+  }
+  .proj-year { font-size: 0.7rem; color: rgba(247,243,238,0.4); letter-spacing: 0.1em; }
+  .proj-arrow {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,148,58,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .proj:hover .proj-arrow { opacity: 1; }
+
+  /* PROCESS */
+  .process-section { background: var(--gold-pale); padding: 8rem 4rem; }
+  .process-inner { max-width: 1200px; margin: 0 auto; }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 5rem;
+    border-top: 1px solid rgba(74,92,58,0.2);
+  }
+  .step {
+    padding: 3rem 2rem 3rem 0;
+    border-right: 1px solid rgba(74,92,58,0.2);
+  }
+  .step:last-child { border-right: none; padding-right: 0; }
+  .step:not(:first-child) { padding-left: 2rem; padding-right: 2rem; }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: rgba(201,148,58,0.25);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .step-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--moss-dark);
+    margin-bottom: 1rem;
+  }
+  .step-desc { font-size: 0.8rem; line-height: 1.9; color: var(--ink-soft); font-weight: 300; }
+
+  /* TESTIMONIAL */
+  .testimonial-section {
+    background: var(--moss);
+    padding: 7rem 4rem;
+    text-align: center;
+  }
+  .testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    max-width: 800px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.5;
+  }
+  .testimonial-author {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    color: rgba(201,148,58,0.2);
+    line-height: 0.5;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  /* CONTACT */
+  .contact-section { display: grid; grid-template-columns: 1fr 1fr; }
+  .contact-left {
+    background: var(--ink);
+    padding: 7rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 2rem;
+  }
+  .contact-title em { font-style: italic; color: var(--gold-light); }
+  .contact-info { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+  .contact-item { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .contact-item-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-top: 3px;
+    min-width: 60px;
+  }
+  .contact-item-value { font-size: 0.85rem; color: rgba(247,243,238,0.6); font-weight: 300; line-height: 1.6; }
+  .contact-right {
+    background: var(--moss-dark);
+    padding: 7rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .form-group { margin-bottom: 2rem; }
+  .form-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(201,148,58,0.3);
+    padding: 0.75rem 0;
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--gold); }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(247,243,238,0.2); }
+  .form-textarea { resize: none; height: 100px; }
+  .btn-submit {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 1.1rem 2.5rem;
+    cursor: none;
+    transition: all 0.3s ease;
+  }
+  .btn-submit:hover { background: var(--gold); color: var(--moss-dark); }
+  .btn-arrow {
+    width: 20px; height: 1px;
+    background: currentColor;
+    position: relative;
+    transition: width 0.3s;
+  }
+  .btn-submit:hover .btn-arrow { width: 30px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(201,148,58,0.1);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.4);
+  }
+  .footer-text { font-size: 0.65rem; color: rgba(247,243,238,0.25); letter-spacing: 0.1em; }
+  .footer-socials { display: flex; gap: 2rem; }
+  .footer-socials a {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(247,243,238,0.3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-socials a:hover { color: var(--gold); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 2rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 8rem 2.5rem 4rem; min-height: 100vh; }
+    .about { grid-template-columns: 1fr; padding: 5rem 2rem; }
+    .section-number { display: none; }
+    .services-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .proj-1, .proj-2, .proj-3, .proj-4, .proj-5, .proj-6 { grid-column: span 1; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .contact-section { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .portfolio-filter { display: none; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Alessandra</div>
+  <ul class="nav-links">
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#processo">Processo</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Arquitetura &amp; Interiores</div>
+    <h1 class="hero-name">
+      Espaços que<br><em>respiram</em><br>identidade.
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">
+      Projetamos ambientes que transcendem a função — onde cada detalhe carrega intenção e cada espaço conta uma história única.
+    </p>
+    <div class="hero-scroll-hint">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Explorar</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-placeholder">
+      <span class="hero-img-label">Fotografia do Projeto</span>
+    </div>
+    <div class="hero-year">2025</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="sobre">
+  <div class="section-number reveal">01</div>
+  <div class="about-content reveal">
+    <div class="section-label">Sobre</div>
+    <h2 class="section-title">Arquitetura como <em>linguagem</em></h2>
+    <p class="about-text">
+      Com mais de 12 anos de experiência, Alessandra desenvolve projetos residenciais e comerciais pautados pela escuta atenta do cliente, respeito ao contexto e rigor construtivo. Cada obra é uma conversa entre o espaço, a luz e as pessoas que o habitam.
+    </p>
+    <div class="about-stats">
+      <div>
+        <div class="stat-num">87+</div>
+        <div class="stat-label">Projetos Entregues</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">Anos de Experiência</div>
+      </div>
+      <div>
+        <div class="stat-num">4</div>
+        <div class="stat-label">Prêmios Recebidos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <div>
+        <div class="section-label" style="color:var(--gold-light)">Serviços</div>
+        <h2 class="services-title">O que <em>fazemos</em></h2>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">I.</div>
+        <div class="service-name">Projetos Residenciais</div>
+        <p class="service-desc">Casas e apartamentos que traduzem a essência de quem vive neles — do conceito à entrega das chaves.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">II.</div>
+        <div class="service-name">Design de Interiores</div>
+        <p class="service-desc">Ambientes interiores com composição cuidadosa de materiais, luz, cor e mobiliário.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">III.</div>
+        <div class="service-name">Arquitetura Comercial</div>
+        <p class="service-desc">Espaços que comunicam a identidade das marcas e otimizam a experiência de clientes e colaboradores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio-section" id="projetos">
+  <div class="portfolio-header reveal">
+    <div>
+      <div class="section-label">Portfólio</div>
+      <h2 class="section-title" style="max-width:400px">Projetos <em>selecionados</em></h2>
+    </div>
+    <ul class="portfolio-filter">
+      <li class="active">Todos</li>
+      <li>Residencial</li>
+      <li>Comercial</li>
+      <li>Interiores</li>
+    </ul>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="proj proj-1">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Residencial</div>
+          <div class="proj-title">Casa Mata Atlântica</div>
+          <div class="proj-year">2024 — São Paulo, SP</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+    <div class="proj proj-2">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Interiores</div>
+          <div class="proj-title">Loft Jardins</div>
+          <div class="proj-year">2024</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+    <div class="proj proj-3">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Comercial</div>
+          <div class="proj-title">Café &amp; Co-working</div>
+          <div class="proj-year">2023</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+    <div class="proj proj-4">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Residencial</div>
+          <div class="proj-title">Cobertura Itaim</div>
+          <div class="proj-year">2023</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+    <div class="proj proj-5">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Interiores</div>
+          <div class="proj-title">Escritório Butantã</div>
+          <div class="proj-year">2022</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+    <div class="proj proj-6">
+      <div class="proj-inner">
+        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-overlay">
+          <div class="proj-category">Residencial</div>
+          <div class="proj-title">Sítio Serra Negra</div>
+          <div class="proj-year">2022</div>
+        </div>
+        <div class="proj-arrow">&#8594;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="processo">
+  <div class="process-inner">
+    <div class="reveal">
+      <div class="section-label">Processo</div>
+      <h2 class="section-title">Como <em>trabalhamos</em></h2>
+    </div>
+    <div class="process-steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-name">Escuta &amp; Diagnóstico</div>
+        <p class="step-desc">Compreensão profunda das necessidades, rotina, desejos e contexto do cliente antes de qualquer linha traçada.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-name">Conceito &amp; Programa</div>
+        <p class="step-desc">Desenvolvimento do partido arquitetônico, definição de materiais, volumetria e relações espaciais.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-name">Projeto Executivo</div>
+        <p class="step-desc">Documentação técnica completa — plantas, cortes, detalhamentos e especificações para execução precisa.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-name">Obra &amp; Entrega</div>
+        <p class="step-desc">Acompanhamento próximo de cada etapa construtiva até a entrega do espaço finalizado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <span class="quote-mark reveal">"</span>
+  <p class="testimonial-quote reveal">
+    Alessandra entendeu exatamente o que queríamos — um espaço que fosse nosso de verdade. O resultado superou tudo o que imaginávamos.
+  </p>
+  <div class="testimonial-author reveal">— Ana &amp; Pedro Costa, Residência Particular, 2024</div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contato">
+  <div class="contact-left">
+    <div class="section-label" style="color:var(--gold)">Contato</div>
+    <h2 class="contact-title">Vamos criar algo <em>juntos?</em></h2>
+    <p style="font-size:0.85rem;color:rgba(247,243,238,0.45);font-weight:300;line-height:2;max-width:320px;margin-top:1rem">
+      Cada projeto começa com uma conversa. Conte-nos sobre seu espaço e como podemos transformá-lo.
+    </p>
+    <div class="contact-info">
+      <div class="contact-item">
+        <span class="contact-item-label">Email</span>
+        <span class="contact-item-value">contato@alessandra.arq.br</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-item-label">Tel</span>
+        <span class="contact-item-value">+55 11 9 9999-0000</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-item-label">CAU</span>
+        <span class="contact-item-value">A00000-0 / SP</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-item-label">Studio</span>
+        <span class="contact-item-value">São Paulo, SP</span>
+      </div>
+    </div>
+  </div>
+  <div class="contact-right">
+    <div class="form-group">
+      <label class="form-label">Nome</label>
+      <input class="form-input" type="text" placeholder="Seu nome completo">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" placeholder="email@exemplo.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de Projeto</label>
+      <input class="form-input" type="text" placeholder="Residencial, comercial, interiores...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mensagem</label>
+      <textarea class="form-textarea" placeholder="Conte-nos sobre seu projeto..."></textarea>
+    </div>
+    <button class="btn-submit">
+      Enviar Mensagem
+      <span class="btn-arrow"></span>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Alessandra Arquitetura</div>
+  <div class="footer-text">&#169; 2025 — Todos os direitos reservados</div>
+  <div class="footer-socials">
+    <a href="#">Instagram</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Behance</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', function(e) {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(function() {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  document.querySelectorAll('a, button, .proj, .service-card, .portfolio-filter li').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+      ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      ring.style.borderColor = 'var(--gold-light)';
+    });
+    el.addEventListener('mouseleave', function() {
+      cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+      ring.style.transform = 'translate(-50%, -50%) scale(1)';
+      ring.style.borderColor = 'var(--gold)';
+    });
+  });
+
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(function(el) { observer.observe(el); });
+
+  // Portfolio filter
+  document.querySelectorAll('.portfolio-filter li').forEach(function(li) {
+    li.addEventListener('click', function() {
+      document.querySelectorAll('.portfolio-filter li').forEach(function(l) { l.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
