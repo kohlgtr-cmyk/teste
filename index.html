@@ -653,7 +653,19 @@
     color: rgba(247,243,238,0.3);
     text-decoration: none;
     transition: color 0.3s;
+
   }
+
+  .proj-inner:hover .proj-bg img, 
+.proj-inner:hover .proj-bg {
+    transform: scale(1.1);
+    transition: transform 0.5s ease;
+}
+
+.proj-inner {
+    overflow: hidden; /* Importante para o zoom não "vazar" do card */
+}
+
   .footer-socials a:hover { color: var(--gold); }
 
   /* SCROLL REVEAL */
@@ -796,7 +808,7 @@
   <div class="portfolio-grid reveal">
     <div class="proj proj-1">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="casa-mata-atlantica.png" alt="Casa Mata Atlântica" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Residencial</div>
           <div class="proj-title">Casa Mata Atlântica</div>
@@ -807,7 +819,7 @@
     </div>
     <div class="proj proj-2">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="loft.png" alt="Loft Jardins" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Interiores</div>
           <div class="proj-title">Loft Jardins</div>
@@ -818,7 +830,7 @@
     </div>
     <div class="proj proj-3">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="cafe-co-working.png" alt="Café &amp; Co-working" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Comercial</div>
           <div class="proj-title">Café &amp; Co-working</div>
@@ -829,7 +841,7 @@
     </div>
     <div class="proj proj-4">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="cobertura.png" alt="Residencial - Cobertura" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Residencial</div>
           <div class="proj-title">Cobertura</div>
@@ -840,7 +852,7 @@
     </div>
     <div class="proj proj-5">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="escritorio.png" alt="Interiores - Escritório" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Interiores</div>
           <div class="proj-title">Escritório</div>
@@ -851,7 +863,7 @@
     </div>
     <div class="proj proj-6">
       <div class="proj-inner">
-        <div class="proj-bg"><span class="proj-placeholder-icon">Imagem</span></div>
+        <div class="proj-bg"><img src="sitio.png" alt="Residencial - Sítio Serra" class="img-projeto"></div>
         <div class="proj-overlay">
           <div class="proj-category">Residencial</div>
           <div class="proj-title">Sítio Serra</div>
