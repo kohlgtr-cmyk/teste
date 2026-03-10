@@ -75,21 +75,21 @@
   }
   .nav-logo {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     letter-spacing: 0.2em;
-    color: var(--moss-dark);
+    color: var(--ink);
     text-transform: uppercase;
-    font-weight: 300;
+    font-weight: 600;
   }
   .nav-links {
     display: flex; gap: 3rem;
     list-style: none;
   }
   .nav-links a {
-    font-size: 0.7rem;
+    font-size: 1rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--ink);
     text-decoration: none;
     font-weight: 300;
     transition: color 0.3s;
@@ -193,13 +193,12 @@
     inset: 2rem;
     border: 1px solid rgba(201,148,58,0.2);
   }
-  .hero-img-label {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: rgba(201,148,58,0.4);
-    writing-mode: vertical-rl;
+
+  .hero-img {
+    inset: 2rem;
+    object-fit: contain;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
   }
   .hero-year {
     position: absolute;
@@ -779,7 +778,9 @@
   </div>
   <div class="hero-right">
     <div class="hero-img-placeholder">
-      <span class="hero-img-label">Fotografia do Projeto</span>
+      <span class="hero-img">
+        <img alt="esboço" src="rascunho.png">
+      </span>
     </div>
     <div class="hero-year">2025</div>
   </div>
